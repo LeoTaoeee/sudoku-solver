@@ -1,5 +1,4 @@
 import pprint
-import numpy
 
 #9x9 standard sudoku board
 board1 = [
@@ -22,7 +21,33 @@ def Solve (board):
     else:
         row,col = temp
         
-    for i in range(1,10)
+    for num in range(1,10):
+        if valid(board,num,(row,col)):
+            board[row][col]=num
+            
+            if Solve(board):
+                return True
+            board[row][col]=0
+    return False
+
+def valid (board,num,pos):
+    #column
+    for a in range(len(board)):
+        if board[a][pos[1]] == num and pos[0]!= a:
+            return False
+    #row
+    for b in range(len(board)):
+        if board[pos[0]][b] == num and pos[1]!= b:
+            return False
+    #check the local box
+    x = pos[1] // 3
+    y = pos[0] // 3
+    for i in range(y*3, y*3 + 3):
+        for j in range(x * 3, x*3 + 3):
+            if board[i][j] == num and (i,j) != pos:
+                return False
+
+    return True
 
 #see if board is empty. if not return first empty coordinate    
 def empty(board):
@@ -31,3 +56,24 @@ def empty(board):
             if board[a][b] == 0 : 
                 return (a,b)
     return None        
+
+def print_board(board):
+    for a in range(len(board)):
+        if a%3 == 0 and a!=0:
+            print ("- - - - - - - - - - - - - ")
+        for b in range(len(board[0])):
+            if b % 3 == 0 and b != 0:
+                print(" | ", end="")
+
+            if b == 8:
+                print(board[a][b])
+            else:
+                print(str(board[a][b]) + " ", end="")
+                
+print("The original board was:")
+print_board(board1)
+Solve(board1)
+
+print(" ")
+print("now the solved board is:")
+print_board(board1)
